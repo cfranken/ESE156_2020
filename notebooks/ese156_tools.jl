@@ -7,6 +7,9 @@ using Distributions
 using Interpolations
 using Polynomials
 using Parameters
+using CSV
+using DelimitedFiles
+using ForwardDiff, DiffResults
 
 abstract type InstrumentOperator end
 
@@ -130,10 +133,45 @@ function conv_spectra(m::KernelInstrument, ν, spectrum)
     return interp_cubic(m.ν_out)
 end;
     
+
+"Reduce profile dimensions"
+function reduce_profile(n::Int, profile::AtmosphericProfile, σ_matrix)
+    @assert n < length(profile.T)
+    @unpack lat, lon, psurf = profile
+    # New rough half levels (boundary points)
+    a = range(0, maximum(profile.p), length=n + 1)
+    dims = size(σ_matrix)
+    FT = eltype(σ_matrix)
+    σ_matrix_lr = zeros(FT, dims[1], n, dims[3])
+    T = zeros(FT, n);
+    q = zeros(FT, n);
+    p_full = zeros(FT, n);
+    p_levels = zeros(FT, n + 1);
+    vmr_h2o  = zeros(FT, n);
+    vcd_dry  = zeros(FT, n);
+    vcd_h2o  = zeros(FT, n);
+
+    for i = 1:n
+        ind = findall(a[i] .< profile.p .<= a[i + 1]);
+        σ_matrix_lr[:,i,:] = mean(σ_matrix[:,ind,:], dims=2);
+        p_levels[i] = profile.p_levels[ind[1]]
+        p_levels[i + 1] = profile.p_levels[ind[end]]
+        p_full[i] = mean(profile.p_levels[ind])
+        T[i] = mean(profile.T[ind])
+        q[i] = mean(profile.q[ind])
+        vmr_h2o[i] = mean(profile.vmr_h2o[ind])
+        vcd_dry[i] = sum(profile.vcd_dry[ind])
+        vcd_h2o[i] = sum(profile.vcd_h2o[ind])
+    end
+
+    return AtmosphericProfile(lat, lon, psurf, T, q, p_full, p_levels, vmr_h2o, vcd_dry, vcd_h2o), σ_matrix_lr
+end
+
+    
+    
     
 
 
 
 
-
-
+    
