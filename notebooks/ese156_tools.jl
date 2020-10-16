@@ -1,11 +1,12 @@
 using NCDatasets
 using ProgressMeter
-using RadiativeTransfer.CrossSection
 using Plots
 using ImageFiltering
 using Distributions
 using Interpolations
 using Polynomials
+
+using RadiativeTransfer.CrossSection
 using Parameters
 
 abstract type InstrumentOperator end
