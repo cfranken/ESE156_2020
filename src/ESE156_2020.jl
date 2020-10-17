@@ -1,2 +1,2 @@
 using IJulia
-jupyterlab(dir=joinpath(dirname(@__FILE__), "..", "notebooks"))
+jupyterlab(dir=joinpath(dirname(@__FILE__), ".."))
