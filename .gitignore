@@ -14,3 +14,5 @@ notebooks/*.png
 
 # Ignore homework files, but leave placeholder
 homework/*
+scripts/TimerTest.pdf
+scripts/timerTest.dat
