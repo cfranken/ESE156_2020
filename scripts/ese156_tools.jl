@@ -166,7 +166,7 @@ function reduce_profile(n::Int, profile::AtmosphericProfile, σ_matrix)
     end
 
     return AtmosphericProfile(lat, lon, psurf, T, q, p_full, p_levels, vmr_h2o, vcd_dry, vcd_h2o), σ_matrix_lr
-end
+    end;
 
     
     
