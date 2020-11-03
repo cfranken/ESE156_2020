@@ -1,3 +1,4 @@
+using Pkg.Artifacts
 using NCDatasets
 using ProgressMeter
 using Plots
@@ -166,7 +167,15 @@ function reduce_profile(n::Int, profile::AtmosphericProfile, σ_matrix)
     end
 
     return AtmosphericProfile(lat, lon, psurf, T, q, p_full, p_levels, vmr_h2o, vcd_dry, vcd_h2o), σ_matrix_lr
-    end;
+end;
+
+function artifact_ESE_folder(uuid::Union{String,Nothing}=nothing)
+    name = "ESE156_2020"
+    artifacts_toml = find_artifacts_toml(pwd())
+    artifact_dict = Artifacts.load_artifacts_toml(artifacts_toml)
+    Artifacts.do_artifact_str(name, artifact_dict, artifacts_toml, uuid) 
+end
+
 
     
     
