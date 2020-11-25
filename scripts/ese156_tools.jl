@@ -52,14 +52,14 @@ function read_atmos_profile(file::String, lat::Real, lon::Real, timeIndex; g₀=
     # Find index (nearest neighbor, one could envision interpolation in space and time!):
     iLat = argmin(abs.(lat_ .- lat))
     iLon = argmin(abs.(lon_ .- lon))
-
+    @show ds["T"]
     # Temperature profile
-    T    = convert(Array{FT,1}, ds["T"][iLat, iLon, :, timeIndex])
+    T    = convert(Array{FT,1}, ds["T"][ iLon,iLat, :, timeIndex])
     # specific humidity profile
-    q    = convert(Array{FT,1}, ds["QV"][iLat, iLon, :, timeIndex])
+    q    = convert(Array{FT,1}, ds["QV"][iLon,iLat,  :, timeIndex])
     
     # Surafce pressure
-    psurf = convert(FT, ds["PS"][iLat, iLon, timeIndex])
+    psurf = convert(FT, ds["PS"][iLon, iLat, timeIndex])
     
     # AK and BK global attributes (important to calculate pressure half-levels)
     ak = ds.attrib["HDF_GLOBAL.ak"][:]
